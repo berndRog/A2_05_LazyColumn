@@ -3,6 +3,7 @@ package de.rogallab.mobile
 import android.app.Application
 import de.rogallab.mobile.di.appModules
 import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
 import org.koin.android.logger.AndroidLogger
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.logger.Level
@@ -15,7 +16,7 @@ class MainApplication : Application() {
       // Initialize any global state or dependencies here
       // Composition Root for Koin
       startKoin {
-         logger(AndroidLogger(Level.DEBUG))
+         androidLogger(Level.DEBUG)
          androidContext(androidContext = this@MainApplication)
          modules(appModules)
       }
