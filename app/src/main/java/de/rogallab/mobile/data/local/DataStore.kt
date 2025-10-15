@@ -1,6 +1,8 @@
 package de.rogallab.mobile.data.local
 
 import android.content.Context
+import de.rogallab.mobile.Globals.directory_name
+import de.rogallab.mobile.Globals.file_name
 import de.rogallab.mobile.data.IDataStore
 import de.rogallab.mobile.domain.entities.Person
 import de.rogallab.mobile.domain.utilities.logDebug
@@ -10,15 +12,20 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 class DataStore(
-   private val _context: Context,
-   private val _seed: Seed
-): IDataStore {
+   context: Context,
+   directoryName: String?,
+   fileName: String?
+) : IDataStore {
 
-   init {
-      logDebug(TAG, "this: ${this.hashCode()}")
-      logDebug(TAG, "_context: ${_context.hashCode()}")
-      logDebug(TAG, "_seed: ${_seed.hashCode()}")
-   }
+   // directory and file name for the dataStore from MainApplication
+   // get the Apps home directory
+   private val _appHome:String = context.filesDir.toString()
+
+   val filePath = getOrCreateFilePath(
+      appHome =  _appHome,
+      directoryName = directoryName ?: directory_name,
+      fileName = fileName ?: file_name
+   )
 
    // list of people
    private var _people: MutableList<Person> = mutableListOf()
@@ -29,20 +36,37 @@ class DataStore(
       ignoreUnknownKeys = true
    }
 
-   init {
+   override fun initialize() {
       logDebug(TAG, "init: read datastore")
       _people.clear()
+
+      // /users/home/documents/android/peoplek08.json
+      val file = File(filePath)
+      if (!file.exists() || file.readText().isBlank()) {
+         // seed _people with some data (if not used in tests)
+         val seed = Seed()
+         _people.addAll(seed.people)
+         logVerbose(TAG, "create(): seedData ${_people.size} people")
+         write()
+      }
+      // read people from JSON file
       read()
    }
 
    override fun selectAll(): List<Person> =
       _people.toList()
 
+   // sort case-insensitive by selector
+   override fun selectAllSortedBy(selector: (Person) -> String?): List<Person> =
+      _people.sortedBy { person -> selector(person)?.lowercase() }
+         .toList()
+
    override fun selectWhere(predicate: (Person) -> Boolean): List<Person> =
-      _people.filter(predicate).toList()
+      _people.filter(predicate)
+         .toList()
 
    override fun findById(id: String): Person? =
-      _people.firstOrNull{ it:Person -> it.id == id }
+      _people.firstOrNull { it: Person -> it.id == id }
 
    override fun findBy(predicate: (Person) -> Boolean): Person? =
       _people.firstOrNull(predicate)
@@ -59,7 +83,7 @@ class DataStore(
       logVerbose(TAG, "update: $person")
       val index = _people.indexOfFirst { it.id == person.id }
       if (index == -1)
-         throw IllegalArgumentException("Person with id ${person.id} not found")
+         throw IllegalArgumentException("Person with id ${person.id} does not exist")
       _people[index] = person
       write()
    }
@@ -67,81 +91,87 @@ class DataStore(
    override fun delete(person: Person) {
       logVerbose(TAG, "delete: $person")
       if (_people.none { it.id == person.id })
-         throw IllegalArgumentException("Person with id ${person.id} not found")
+         throw IllegalArgumentException("Person with id ${person.id} does not exist")
       _people.remove(person)
       write()
    }
 
-   // dataStore is saved as JSON file to the user's home directory
+   // list of people is saved as JSON file to the user's home directory
    // UserHome/Documents/android/people.json
    private fun read() {
       try {
-         val filePath = getFilePath(FILE_NAME)
-         // if file does not exist or is empty, return an empty list
-         val file = File(filePath)
-         if (!file.exists() || file.readText().isBlank()) {
-            // seed _people with some data
-            _people = _seed.people.toMutableList()
-            logVerbose(TAG, "read: people:${_people.size}")
-            write()
-            return
-         }
+         // val filePath = getOrCreateFilePath(_appHome, directoryName, fileName)
          // read json from a file and convert to a list of people
          val jsonString = File(filePath).readText()
-         _people = _json.decodeFromString(jsonString)
          logVerbose(TAG, jsonString)
+         _people = _json.decodeFromString(jsonString)
+         logDebug(TAG, "read(): decode JSON ${_people.size} Ppeople")
       } catch (e: Exception) {
          logError(TAG, "Failed to read: ${e.message}")
          throw e
       }
    }
 
-   // write the list of people to the dataStore
+   // write the list of people to the dataStore as JSON file
    private fun write() {
       try {
-         val filePath = getFilePath(FILE_NAME)
+         // val filePath = getOrCreateFilePath(_appHome, directoryName, fileName)
          val jsonString = _json.encodeToString(_people)
+         logDebug(TAG, "write(): encode JSON ${_people.size} people")
          // save to a file
-         val file = File(filePath)
-         file.writeText(jsonString)
-         logVerbose(TAG, "write: $jsonString")
+         File(filePath).writeText(jsonString)
+         logVerbose(TAG, jsonString)
       } catch (e: Exception) {
          logError(TAG, "Failed to write: ${e.message}")
          throw e
       }
    }
 
-   // get the file path for the dataStore
-   // UserHome/Documents/android/people.json
-   private fun getFilePath(fileName: String): String {
-      try {
-         // get the Apps home directory
-         val appHome = _context.filesDir
-         // the directory must exist, if not create it
-         val directoryPath = "$appHome/documents/$DIRECTORY_NAME"
-         if ( !directoryExists(directoryPath) )
-            createDirectory(directoryPath)
-         // return the file path
-         return "$directoryPath/$fileName"
-      } catch (e: Exception) {
-         logError(TAG, "Failed to getFilePath or create directory; ${e.localizedMessage}")
-         throw e
-      }
-   }
-
-   private fun directoryExists(directoryPath: String): Boolean {
-      val directory = File(directoryPath)
-      return directory.exists() && directory.isDirectory
-   }
-
-   private fun createDirectory(directoryPath: String): Boolean {
-      val directory = File(directoryPath)
-      return directory.mkdirs()
-   }
-
    companion object {
+
       private const val TAG = "<-DataStore"
-      private const val DIRECTORY_NAME = "android"
-      private const val FILE_NAME = "people1.json"
+
+      // get the file path for the dataStore
+      // UserHome/documents/android/people.json
+      fun getOrCreateFilePath(
+         appHome: String,
+         directoryName: String,
+         fileName: String
+      ): String {
+         try {
+            // the directory must exist, if not create it
+            val directoryPath = "$appHome/documents/$directoryName"
+            if (!directoryExists(directoryPath)) {
+               val result = createDirectory(directoryPath)
+               if (!result) {
+                  throw Exception("Failed to create directory: $directoryPath")
+               }
+            }
+
+            // create the file path
+            val filePath = "$directoryPath/$fileName"
+            // create the file if it doesn't exist
+            val file = File(filePath)
+            if (!file.exists()) {
+               file.createNewFile()
+               logDebug(TAG, "Created new file: $filePath")
+            }
+            // return the file path
+            return filePath
+         } catch (e: Exception) {
+            logError(TAG, "Failed to getFilePath or create directory; ${e.message}")
+            throw e
+         }
+      }
+
+      private fun directoryExists(directoryPath: String): Boolean {
+         val directory = File(directoryPath)
+         return directory.exists() && directory.isDirectory
+      }
+
+      private fun createDirectory(directoryPath: String): Boolean {
+         val directory = File(directoryPath)
+         return directory.mkdirs()
+      }
    }
 }

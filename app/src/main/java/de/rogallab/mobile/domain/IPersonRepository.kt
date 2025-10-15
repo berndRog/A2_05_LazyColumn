@@ -5,6 +5,7 @@ import de.rogallab.mobile.domain.entities.Person
 interface IPersonRepository {
 
    fun getAll(): Result<List<Person>>
+   fun getAllSortedBy(selector: (Person) -> String?): Result<List<Person>>
    fun getWhere(predicate: (Person) -> Boolean): Result<List<Person>>
    fun findById(id: String): Result<Person?>
    fun findBy(predicate: (Person) -> Boolean): Result<Person?>

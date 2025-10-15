@@ -22,6 +22,16 @@ class PersonRepository(
          Result.failure(e)
       }
 
+   override fun getAllSortedBy(
+      selector: (Person) -> String?
+   ): Result<List<Person>> =
+      try {
+         // sort case insensitive by selector
+         Result.success(_dataStore.selectAllSortedBy(selector))
+      } catch (e: Throwable) {
+         Result.failure(e)
+      }
+
    override fun getWhere(
       predicate: (Person) -> Boolean
    ): Result<List<Person>> =

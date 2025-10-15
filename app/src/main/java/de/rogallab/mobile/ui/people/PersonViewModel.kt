@@ -31,21 +31,23 @@ class PersonViewModel(
       }
    }
 
-   private fun onFirstNameChange(firstName: String) {
+   private fun onFirstNameChange(firstName: String) =
       updateState(_personUiStateFlow) {
-         copy(person = person.copy(firstName = firstName.trim())) }
-   }
+         copy(person = person.copy(firstName = firstName.trim()))
+      }
 
-   private fun onLastNameChange(lastName: String) {
+   private fun onLastNameChange(lastName: String) =
       updateState(_personUiStateFlow) {
-         copy(person = person.copy(lastName = lastName.trim())) }
-   }
+         copy(person = person.copy(lastName = lastName.trim()))
+      }
 
    private fun fetchById(id: String) {
       logDebug(TAG, "fetchById() $id")
       _repository.findById(id)
          .onSuccess { person ->
-            updateState(_personUiStateFlow) { copy(person = person?: Person()) } // if null, create an empty
+            updateState(_personUiStateFlow) {
+               copy(person = person?: Person())
+            } // if null, create an empty
          }
          .onFailure { logError(TAG, it.message ?: "Error in fetchById") }
    }
@@ -87,7 +89,9 @@ class PersonViewModel(
       logDebug(TAG, "fetch")
       _repository.getAll()
          .onSuccess { people ->
-            updateState(_peopleUiStateFlow) { copy(people = people ?: emptyList()) }
+            updateState(_peopleUiStateFlow) {
+               copy(people = people ?: emptyList())
+            }
          }
          .onFailure { logError(TAG, it.message ?: "Error in fetch") }
    }

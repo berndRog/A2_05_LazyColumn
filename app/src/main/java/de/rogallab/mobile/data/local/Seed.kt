@@ -2,6 +2,7 @@ package de.rogallab.mobile.data.local
 
 import de.rogallab.mobile.domain.entities.Person
 import de.rogallab.mobile.domain.utilities.newUuid
+import java.util.Locale
 import kotlin.random.Random
 
 class Seed {
@@ -25,7 +26,8 @@ class Seed {
 //         var indexLast = random.nextInt(lastNames.size)
          val firstName = firstNames[index]
          val lastName = lastNames[index]
-         val person = Person(firstName, lastName, newUuid())
+         val uuidString = String.format(Locale.ROOT, "%02d000000-0000-0000-0000-000000000000", index+1)
+         val person = Person(firstName, lastName, uuidString)
          people.add(person)
       }
    }

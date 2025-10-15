@@ -23,9 +23,6 @@ class MainApplication : Application() {
    }
 
    companion object {
-      private const val TAG = "<-MainApp"
-      const val IS_INFO = true
-      const val IS_DEBUG = true
-      const val IS_VERBOSE = true
+      private const val TAG = "<-MainApplication"
    }
 }

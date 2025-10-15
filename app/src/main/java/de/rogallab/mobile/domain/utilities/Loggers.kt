@@ -1,25 +1,33 @@
 package de.rogallab.mobile.domain.utilities
 
 import android.util.Log
-import de.rogallab.mobile.MainApplication.Companion.IS_DEBUG
-import de.rogallab.mobile.MainApplication.Companion.IS_INFO
-import de.rogallab.mobile.MainApplication.Companion.IS_VERBOSE
+import de.rogallab.mobile.Globals.isDebug
+import de.rogallab.mobile.Globals.isInfo
+import de.rogallab.mobile.Globals.isVerbose
 
 fun logError(tag: String, message: String) {
    val msg = formatMessage(message)
    Log.e(tag, msg)
 }
+fun logWarning(tag: String, message: String) {
+   val msg = formatMessage(message)
+   Log.w(tag, msg)
+}
 fun logInfo(tag: String, message: String) {
    val msg = formatMessage(message)
-   if(IS_INFO) Log.i(tag, msg)
+   if(isInfo) Log.i(tag, msg)
 }
+
 fun logDebug(tag: String, message: String) {
    val msg = formatMessage(message)
-   if (IS_DEBUG) Log.d(tag, msg)
+   if (isDebug) Log.d(tag, msg)
 }
+
 fun logVerbose(tag: String, message: String) {
-   if (IS_VERBOSE) Log.v(tag, message)
+   if (isVerbose) Log.v(tag, message)
 }
 
 private fun formatMessage(message: String) =
-   String.format("%-90s %s", message, Thread.currentThread().toString())
+   String.format("%-90s %s",
+      message, Thread.currentThread().toString()
+   )

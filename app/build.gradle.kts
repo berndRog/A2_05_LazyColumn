@@ -30,9 +30,6 @@ android {
       sourceCompatibility = JavaVersion.VERSION_17
       targetCompatibility = JavaVersion.VERSION_17
    }
-   kotlinOptions {
-      jvmTarget = "17"
-   }
    buildFeatures {
       compose = true
    }
@@ -57,7 +54,7 @@ dependencies {
    // Ui Activity
    // https://developer.android.com/jetpack/androidx/releases/activity
    implementation(libs.androidx.activity.compose)
-   implementation(libs.androidx.compose.runtime)
+   //implementation(libs.androidx.compose.runtime)
    // Ui Compose
    // https://developer.android.com/jetpack/compose/bom/bom-mapping
    val composeBom = platform(libs.androidx.compose.bom)

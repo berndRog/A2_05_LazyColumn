@@ -1,8 +1,9 @@
 package de.rogallab.mobile.di
 
+import android.content.Context
+import androidx.test.platform.app.InstrumentationRegistry
 import de.rogallab.mobile.data.IDataStore
 import de.rogallab.mobile.data.local.DataStore
-import de.rogallab.mobile.data.local.Seed
 import de.rogallab.mobile.data.repositories.PersonRepository
 import de.rogallab.mobile.domain.IPersonRepository
 import de.rogallab.mobile.domain.utilities.logInfo
@@ -11,16 +12,25 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import kotlin.random.Random
 
-val defModules: Module = module {
-   val tag = "<-defModules"
+val defModulesTest: Module = module {
+   val tag = "<-defModulesTest"
 
+   logInfo(tag, "single    -> InstrumentationRegistry.getInstrumentation().targetContext")
+   single<Context> {
+      InstrumentationRegistry.getInstrumentation().targetContext
+   }
+
+   // use factory to get a new instance each time (to avoid data conflicts in tests)
    logInfo(tag, "single    -> DataStore")
+   val randomText = Random.nextInt(1,1_000_000).toString()
+   val timestamp = System.currentTimeMillis()
    single<IDataStore> {
       DataStore(
-         context = androidContext(),   // dependency injection of Android context
-         directoryName = null,
-         fileName = null
+         context = get<Context>(),
+         directoryName = "androidTest",
+         fileName = "testPeople_${timestamp}_$randomText"
       )
    }
 
@@ -36,22 +46,5 @@ val defModules: Module = module {
       PersonViewModel(
          _repository = get<IPersonRepository>(),
       )
-   }
-}
-
-val appModules: Module = module {
-   try {
-      val testedModules = defModules
-      requireNotNull(testedModules) {
-         "defineModules failed"
-      }
-      logInfo("<-appModules", "include testedModules")
-      includes(
-         testedModules,
-         //testedUiModules,
-         //useCaseModules
-      )
-   } catch (e: Exception) {
-      logInfo("<-appModules", e.message!!)
    }
 }
