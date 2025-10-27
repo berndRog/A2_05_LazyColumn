@@ -105,7 +105,6 @@ dependencies {
    implementation(libs.koin.android)
    implementation(libs.koin.androidx.compose)
 
-
    // Ktor/Kotlin JSON Serializer
    implementation(libs.kotlinx.serialization.json)
 
@@ -114,6 +113,9 @@ dependencies {
    implementation(libs.retrofit2.core)
    implementation(libs.retrofit2.gson)
    implementation(libs.retrofit2.logging)
+
+   // Google Play Services Location
+   implementation(libs.gplay.location)
 
    // TESTS -----------------------
    testImplementation(libs.junit)
