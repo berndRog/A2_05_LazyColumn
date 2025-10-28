@@ -7,4 +7,5 @@ object Globals {
    val isDebug = true
    val isInfo = true
    val isVerbose = true
+   val isComp = true
 }

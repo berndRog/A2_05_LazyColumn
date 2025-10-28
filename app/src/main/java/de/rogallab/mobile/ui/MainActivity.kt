@@ -48,18 +48,18 @@ class MainActivity : BaseActivity(TAG) {
 //                     .fillMaxSize()
 //               )
 
-               PersonScreen(
-                  viewModel = _personViewModel,
-                  modifier = Modifier
-                     .padding(innerPadding)
-                     .fillMaxSize()
-               )
-//               PeopleListScreen(
+//               PersonScreen(
 //                  viewModel = _personViewModel,
 //                  modifier = Modifier
 //                     .padding(innerPadding)
 //                     .fillMaxSize()
 //               )
+               PeopleListScreen(
+                  viewModel = _personViewModel,
+                  modifier = Modifier
+                     .padding(innerPadding)
+                     .fillMaxSize()
+               )
                logInfo(TAG, "personViewModel: ${_personViewModel.hashCode()}")
             }
          }

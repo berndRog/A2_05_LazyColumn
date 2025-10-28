@@ -13,10 +13,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import de.rogallab.mobile.domain.utilities.logComp
 
 @Composable
 fun PersonListItem(
@@ -26,6 +30,10 @@ fun PersonListItem(
    onClicked: (String) -> Unit,     // Event ↑
    onDeleted: (String) -> Unit      // Event ↑
 ) {
+   val tag = "<- PersonListItem"
+   val nComp = remember { mutableIntStateOf(1) }
+   SideEffect { logComp(tag, "Composition #${nComp.value++}") }
+
    Column {
       Row(
          verticalAlignment = Alignment.CenterVertically,

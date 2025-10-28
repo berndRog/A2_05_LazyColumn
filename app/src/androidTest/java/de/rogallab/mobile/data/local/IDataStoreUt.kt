@@ -37,7 +37,7 @@ class IDataStoreUt: KoinTest {
          modules(defModulesTest)
       }
       // decode people from given JSON String and write JSON file
-      _testFilePath = ( _dataStore as DataStore).filePath
+      _testFilePath = _dataStore.filePath.toString()
       requireNotNull(_testFilePath) { "DataStore.filePath is null" }
       _dataStore.initialize()
    }
