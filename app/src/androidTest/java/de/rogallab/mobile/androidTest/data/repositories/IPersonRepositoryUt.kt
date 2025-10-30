@@ -1,19 +1,21 @@
 package de.rogallab.mobile.androidTest.data.repositories
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import de.rogallab.mobile.Globals
+import de.rogallab.mobile.androidTest.di.defModulesAndroidTest
 import de.rogallab.mobile.data.IDataStore
 import de.rogallab.mobile.data.local.Seed
 import de.rogallab.mobile.domain.IPersonRepository
 import de.rogallab.mobile.domain.entities.Person
-import de.rogallab.mobile.androidTest.di.appModulesTest
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.core.context.loadKoinModules
-import org.koin.core.context.unloadKoinModules
+import org.koin.android.ext.koin.androidContext
 import org.koin.test.KoinTest
+import org.koin.test.KoinTestRule
 import org.koin.test.inject
 import java.nio.file.Files
 import java.nio.file.Path
@@ -24,6 +26,12 @@ import kotlin.test.fail
 
 @RunWith(AndroidJUnit4::class)
 class IPersonRepositoryUt : KoinTest {
+
+   @get:Rule
+   val koinRule = KoinTestRule.create {
+      androidContext(InstrumentationRegistry.getInstrumentation().targetContext)
+      modules(defModulesAndroidTest)
+   }
 
    // --- DI ---
    private val _dataStore: IDataStore by inject()
@@ -37,12 +45,9 @@ class IPersonRepositoryUt : KoinTest {
 
    @Before
    fun setup() {
-      // ensure no previous Koin app is running
-//      try {
-//         GlobalContext.getOrNull()?.let { stopKoin() }
-//      } catch (_: Exception) { /* ignore */ }
 
-      loadKoinModules(appModulesTest)
+      //val koin = GlobalContext.get().koin
+      // loadKoinModules(defModulesAndroidTest)
 
       // no logging during testing
       Globals.isInfo = false
@@ -71,7 +76,7 @@ class IPersonRepositoryUt : KoinTest {
          catch (_: Exception) { /* ignore */ }
       }
 
-      unloadKoinModules(appModulesTest)
+      // unloadKoinModules(defModulesAndroidTest)
 
    //      try{
 //         stopKoin()

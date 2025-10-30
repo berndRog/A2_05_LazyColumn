@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import de.rogallab.mobile.Globals
+import de.rogallab.mobile.androidTest.di.defModulesAndroidTest
 import de.rogallab.mobile.data.IDataStore
 import de.rogallab.mobile.data.local.Seed
-import de.rogallab.mobile.di.defModules
 import de.rogallab.mobile.domain.IPersonRepository
 import de.rogallab.mobile.ui.people.PeopleIntent
 import de.rogallab.mobile.ui.people.PersonIntent
@@ -32,7 +32,7 @@ class PersonViewModelIntegrationTest : KoinTest {
    @get:Rule
    val koinRule = KoinTestRule.create {
       androidContext(InstrumentationRegistry.getInstrumentation().targetContext)
-      modules(defModules)
+      modules(defModulesAndroidTest)
    }
 
    // DI

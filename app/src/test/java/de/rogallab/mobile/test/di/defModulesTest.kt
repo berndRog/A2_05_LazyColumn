@@ -1,7 +1,7 @@
 package de.rogallab.mobile.test.di
 
 import android.content.Context
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import de.rogallab.mobile.data.IDataStore
 import de.rogallab.mobile.data.local.dataStore.DataStore
 import de.rogallab.mobile.data.repositories.PersonRepository
@@ -10,16 +10,14 @@ import de.rogallab.mobile.domain.utilities.logInfo
 import de.rogallab.mobile.domain.utilities.newUuid
 import de.rogallab.mobile.ui.people.PersonViewModel
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-import kotlin.random.Random
 
 val defModulesTest: Module = module {
    val tag = "<-defModulesTest"
 
-   logInfo(tag, "test single    -> InstrumentationRegistry.getInstrumentation().targetContext")
+   logInfo(tag, "test single    -> ApplicationProvider.getApplicationContext()")
    single<Context> {
-      InstrumentationRegistry.getInstrumentation().targetContext
+      ApplicationProvider.getApplicationContext()
    }
 
    // use factory to get a new instance each time (to avoid data conflicts in tests)

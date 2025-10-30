@@ -12,8 +12,8 @@ import de.rogallab.mobile.ui.people.PersonViewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-val appModulesTest: Module = module {
-   val tag = "<-appModulesTest"
+val defModulesAndroidTest: Module = module {
+   val tag = "<-defModulesAndroidTest"
 
    logInfo(tag, "test single    -> InstrumentationRegistry.getInstrumentation().targetContext")
    single<Context> {
