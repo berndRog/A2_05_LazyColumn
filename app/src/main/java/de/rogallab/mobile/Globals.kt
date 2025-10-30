@@ -4,8 +4,8 @@ object Globals {
    val directory_name = "android"
    val file_name = "people25.json"
 
-   val isDebug = true
-   val isInfo = true
-   val isVerbose = true
-   val isComp = true
+   var isDebug = true
+   var isInfo = true
+   var isVerbose = true
+   var isComp = true
 }

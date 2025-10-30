@@ -17,7 +17,14 @@ android {
       versionCode = 1
       versionName = "1.0"
 
-      testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+ //   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+      testInstrumentationRunner = "de.rogallab.mobile.androidTest.TestRunner"
+
+   }
+
+   testOptions{
+      animationsDisabled = true
+      unitTests.isIncludeAndroidResources = true    // Robolectric
    }
 
    buildTypes {
@@ -27,8 +34,8 @@ android {
       }
    }
    compileOptions {
-      sourceCompatibility = JavaVersion.VERSION_17
-      targetCompatibility = JavaVersion.VERSION_17
+      sourceCompatibility = JavaVersion.VERSION_21
+      targetCompatibility = JavaVersion.VERSION_21
    }
    buildFeatures {
       compose = true
@@ -36,7 +43,7 @@ android {
 }
 
 kotlin {
-   jvmToolchain(17)
+   jvmToolchain(21)
 }
 
 dependencies {
@@ -119,21 +126,32 @@ dependencies {
 
    // TESTS -----------------------
    testImplementation(libs.junit)
+
+   // androidx-test-core
+   testImplementation(libs.androidx.test.core)
+   testImplementation(libs.androidx.test.core.ktx)
+
+   // Koin
    testImplementation(libs.koin.test)
-   // Koin for JUnit 4 / 5
    testImplementation(libs.koin.test.junit4)
-   // testImplementation(libs.koin.test.junit5)
+
+   // Coroutines, Flow, StateFlow Testing
+   testImplementation(libs.kotlinx.coroutines.test)
+   testImplementation(libs.turbine.test)
+
+   // Roboelectric
+   testImplementation(libs.robolectric.test)
 
    // ANDROID TESTS ---------------
    // https://developer.android.com/jetpack/androidx/releases/test
    // Coroutines Testing
    androidTestImplementation(libs.kotlinx.coroutines.test)
+   androidTestImplementation(libs.androidx.ui.test.junit4)
 
    // To use the androidx.test.core APIs
    //androidx-test-core
    androidTestImplementation(libs.androidx.test.core)
    androidTestImplementation(libs.androidx.test.core.ktx)
-   androidTestImplementation(libs.androidx.ui.test.junit4)
 
    // To use the JUnit Extension APIs
    androidTestImplementation(libs.androidx.test.ext.junit)

@@ -1,8 +1,7 @@
 package de.rogallab.mobile.di
 
 import de.rogallab.mobile.data.IDataStore
-import de.rogallab.mobile.data.local.DataStore
-import de.rogallab.mobile.data.local.Seed
+import de.rogallab.mobile.data.local.dataStore.DataStore
 import de.rogallab.mobile.data.repositories.PersonRepository
 import de.rogallab.mobile.domain.IPersonRepository
 import de.rogallab.mobile.domain.utilities.logInfo
@@ -15,10 +14,10 @@ import org.koin.dsl.module
 val defModules: Module = module {
    val tag = "<-defModules"
 
-   logInfo(tag, "single    -> DataStore")
+   logInfo(tag, "single    -> DataStore: IDataStore")
    single<IDataStore> {
       DataStore(
-         context = androidContext(),   // dependency injection of Android context
+         context = androidContext(),
          directoryName = null,
          fileName = null
       )
@@ -27,7 +26,7 @@ val defModules: Module = module {
    logInfo(tag, "single    -> PersonRepository: IPersonRepository")
    single<IPersonRepository> {
       PersonRepository(
-         _dataStore = get<IDataStore>()  // dependency injection of DataStore
+         _dataStore = get<IDataStore>()
       )
    }
 

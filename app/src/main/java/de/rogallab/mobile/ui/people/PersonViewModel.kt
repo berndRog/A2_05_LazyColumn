@@ -24,6 +24,8 @@ class PersonViewModel(
       when (intent) {
          is PersonIntent.FirstNameChange -> onFirstNameChange(intent.firstName)
          is PersonIntent.LastNameChange -> onLastNameChange(intent.lastName)
+
+         is PersonIntent.Clear -> clear()
          is PersonIntent.FetchById -> fetchById(intent.id)
          is PersonIntent.Create -> create()
          is PersonIntent.Update -> update()
@@ -40,6 +42,12 @@ class PersonViewModel(
       updateState(_personUiStateFlow) {
          copy(person = person.copy(lastName = lastName.trim()))
       }
+
+   private fun clear() {
+      updateState(_personUiStateFlow) {
+         copy(person = Person())  // new Person
+      }
+   }
 
    private fun fetchById(id: String) {
       logDebug(TAG, "fetchById() $id")

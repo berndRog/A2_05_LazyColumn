@@ -27,7 +27,7 @@ class Seed {
          val firstName = firstNames[index]
          val lastName = lastNames[index]
          val uuidString = String.format(Locale.ROOT, "%02d000000-0000-0000-0000-000000000000", index+1)
-         val person = Person(firstName, lastName, uuidString)
+         val person = Person(firstName, lastName, id = uuidString)
          people.add(person)
       }
    }
