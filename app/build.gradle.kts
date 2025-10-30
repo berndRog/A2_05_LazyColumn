@@ -17,7 +17,7 @@ android {
       versionCode = 1
       versionName = "1.0"
 
- //   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+      //   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
       testInstrumentationRunner = "de.rogallab.mobile.androidTest.TestRunner"
 
    }
@@ -61,7 +61,7 @@ dependencies {
    // Ui Activity
    // https://developer.android.com/jetpack/androidx/releases/activity
    implementation(libs.androidx.activity.compose)
-   //implementation(libs.androidx.compose.runtime)
+   implementation(libs.androidx.compose.foundation.layout)
    // Ui Compose
    // https://developer.android.com/jetpack/compose/bom/bom-mapping
    val composeBom = platform(libs.androidx.compose.bom)
@@ -72,9 +72,10 @@ dependencies {
    implementation(libs.androidx.ui.graphics)
    implementation(libs.androidx.ui.tooling)
    implementation(libs.androidx.ui.tooling.preview)
+   implementation(libs.androidx.ui.text.google.fonts)
+   implementation(libs.androidx.animation)
    implementation(libs.androidx.material3)
    implementation(libs.androidx.material.icons.extended)
-   implementation(libs.androidx.ui.text.google.fonts)
    implementation(libs.androidx.material3.adaptive)
    implementation(libs.androidx.material3.windowsizeclass)
 
