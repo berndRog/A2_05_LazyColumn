@@ -23,8 +23,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity(TAG) {
 
+   // Activity-scoped ViewModels viewModelStoreOwner = MainActivity
+   // initialize ViewModel here when needed in Activity / setContent
    // lazy initialization of the ViewModel with koin
-   private val _personViewModel: PersonViewModel by viewModel()
+   // private val _personViewModel: PersonViewModel by viewModel()
 
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
@@ -54,7 +56,7 @@ class MainActivity : BaseActivity(TAG) {
 //                     .fillMaxSize()
 //               )
                PeopleListScreen(
-                  viewModel = _personViewModel,
+                  // viewModel = _personViewModel,
                   modifier = Modifier
                      .padding(innerPadding)
                      .fillMaxSize()

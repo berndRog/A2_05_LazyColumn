@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.rogallab.mobile.domain.utilities.logComp
+import de.rogallab.mobile.ui.base.CollectBy
 import de.rogallab.mobile.ui.people.PersonViewModel
 import de.rogallab.mobile.ui.people.PersonIntent
 
@@ -23,7 +24,8 @@ fun PersonScreen(
    val nComp = remember { mutableIntStateOf(1) }
    SideEffect { logComp(tag, "Composition #${nComp.value++}") }
 
-   val personUiState by viewModel.personUiStateFlow.collectAsStateWithLifecycle()
+// val personUiState by viewModel.personUiStateFlow.collectAsStateWithLifecycle()
+   val personUiState = CollectBy(viewModel.personUiStateFlow, tag)
 
    Column(
       modifier = modifier.fillMaxSize()

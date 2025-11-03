@@ -31,6 +31,8 @@ import de.rogallab.mobile.domain.utilities.logComp
 import de.rogallab.mobile.domain.utilities.logDebug
 import de.rogallab.mobile.domain.utilities.logInfo
 import de.rogallab.mobile.domain.utilities.logVerbose
+import de.rogallab.mobile.ui.MainActivity
+import de.rogallab.mobile.ui.base.CollectBy
 import de.rogallab.mobile.ui.people.PeopleIntent
 import de.rogallab.mobile.ui.people.PersonViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -47,15 +49,16 @@ fun PeopleListScreen(
    SideEffect { logComp(tag, "Composition #${nComp.value++}") }
 
    // observe the peopleUiStateFlow in the ViewModel, notify when the state changes
-   val peopleUiState by viewModel.peopleUiStateFlow.collectAsStateWithLifecycle()
-   val people = peopleUiState.people
-   SideEffect { logDebug(tag, "peopleUiState: $people") }
+   // val peopleUiState by viewModel.peopleUiStateFlow.collectAsStateWithLifecycle()
+   val peopleUiState = CollectBy(viewModel.peopleUiStateFlow, tag)
 
    // read all people from repository, when the screen is created
    LaunchedEffect(Unit) {
       logVerbose(tag, "readPeople()")
       viewModel.handlePeopleIntent(PeopleIntent.Fetch)
    }
+
+   SideEffect{ logVerbose(tag, "Show Lazy Column (visual items)")}
 
    LazyColumn(
       modifier = modifier,
@@ -65,6 +68,9 @@ fun PeopleListScreen(
          items = peopleUiState.people,
          key = { it: Person -> it.id }
       ) { person ->
+         SideEffect {
+            logVerbose(tag, "Lazy Column, size:${peopleUiState.people.size} - Person: ${person.firstName}")}
+
          Row(
             modifier = Modifier
                .padding(bottom = 8.dp)
